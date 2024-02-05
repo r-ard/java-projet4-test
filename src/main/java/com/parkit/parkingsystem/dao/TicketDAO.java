@@ -56,12 +56,12 @@ public class TicketDAO {
             dataBaseConfig.closeResultSet(rs);
             dataBaseConfig.closePreparedStatement(ps);
         }
-        }catch (Exception ex){
+        catch (Exception ex){
             logger.error("Error fetching tickets count",ex);
         }finally {
             dataBaseConfig.closeConnection(con);
-            return ticket;
         }
+        return count;
     }
 
     public Ticket getTicket(String vehicleRegNumber) {
