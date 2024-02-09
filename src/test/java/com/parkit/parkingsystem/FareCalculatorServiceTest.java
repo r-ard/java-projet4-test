@@ -151,4 +151,9 @@ public class FareCalculatorServiceTest {
         fareCalculatorService.calculateFare(ticket);
         assertNotEquals( 0.0D, ticket.getPrice() );
     }
+
+    @Test
+    public void calculateFareCareWithReduction() {
+
+    }
 }
