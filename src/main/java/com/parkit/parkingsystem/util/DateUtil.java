@@ -11,10 +11,10 @@ public class DateUtil {
      */
     public static long getDatesDiff(Date a, Date b) {
         long time = a.getTime() - b.getTime();
-        return (long)Math.floor((double)time / 1000.0D);
+        return (long)Math.ceil(time / 1000.0D);
     }
 
     public static long getDatesDiffInMinutes(Date a, Date b) {
-        return (long)((double)getDatesDiff(a, b) / 60.0D);
+        return (long)Math.ceil(getDatesDiff(a, b) / 60.0D);
     }
 }
