@@ -175,7 +175,7 @@ public class FareCalculatorServiceTest {
     @Test
     public void calculateFareBikeWithMoreThan30MinutesParkingTime() {
         Date inTime = new Date();
-        inTime.setTime( System.currentTimeMillis() - (31 * 60 * 1000) ); // 31 minutes
+        inTime.setTime( System.currentTimeMillis() - (31 * 60 * 1000) ); // 1 hour for the test
         Date outTime = new Date();
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE, false);
 
@@ -190,7 +190,7 @@ public class FareCalculatorServiceTest {
     public void calculateFareCarWithReduction() {
         // Setup ticket
         Date inTime = new Date();
-        inTime.setTime( System.currentTimeMillis() - (60 * 60 * 1000) ); // 31 minutes
+        inTime.setTime( System.currentTimeMillis() - (60 * 60 * 1000) ); // 1 hour for the test
         Date outTime = new Date();
 
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
