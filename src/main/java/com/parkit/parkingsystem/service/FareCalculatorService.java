@@ -6,6 +6,9 @@ import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.util.DateUtil;
 
 public class FareCalculatorService {
+    private final double THIRTY_MINUTES_IN_HOUR = 0.5D;
+    private final double REDUCTION_AMOUNT = 0.05D; // 5%
+
     private TicketDAO ticketDAO;
 
     public FareCalculatorService() {
@@ -16,23 +19,21 @@ public class FareCalculatorService {
         this.ticketDAO = ticketDAO;
     }
 
-    public void calculateFare(Ticket ticket){
+    public void calculateFare(Ticket ticket, boolean applyReduction){
         if( (ticket.getOutTime() == null) || (ticket.getOutTime().before(ticket.getInTime())) ){
             throw new IllegalArgumentException("Out time provided is incorrect:"+ticket.getOutTime().toString());
         }
 
         double duration = (double)DateUtil.getDatesDiffInMinutes(ticket.getOutTime(), ticket.getInTime()) / 60.0D;
 
-        // Apply 30 minutes reduction
-        if(duration <= 0.5D) duration = 0.0D;
-        else duration -= 0.5D;
+        // Apply 30 free minutes
+        if(duration <= THIRTY_MINUTES_IN_HOUR) duration = 0.0D;
 
-        double priceFactor = 1.0D;
+        double priceFactor = 1.0D; // Default 100%
 
-        // If the vehicule has already a registered ticket in the DB, then apply a 5% reduction to the price
-        if(this.ticketDAO != null
-                && this.ticketDAO.getTicketCount(ticket.getVehicleRegNumber()) > 1) {
-            priceFactor = 0.95D;
+        // If the applyReduction flag is set to TRUE, then apply a 5% reduction to the price
+        if(applyReduction) {
+            priceFactor -= REDUCTION_AMOUNT; // Apply the reduction
         }
 
         switch (ticket.getParkingSpot().getParkingType()){
