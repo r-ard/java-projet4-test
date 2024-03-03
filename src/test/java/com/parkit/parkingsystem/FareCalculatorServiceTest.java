@@ -181,7 +181,7 @@ public class FareCalculatorServiceTest {
     }
 
     @Test
-    public void calculateFareCarWithReduction() {
+    public void calculateFareCarWithDiscount() {
         // Setup ticket
         Date inTime = new Date();
         inTime.setTime( System.currentTimeMillis() - (60 * 60 * 1000) ); // 1 hour for the test
@@ -205,7 +205,7 @@ public class FareCalculatorServiceTest {
     }
 
     @Test
-    public void calculateFareBikeWithReduction() {
+    public void calculateFareBikeWithDiscount() {
         // Setup ticket
         Date inTime = new Date();
         inTime.setTime( System.currentTimeMillis() - (60 * 60 * 1000) ); // 1 hour for the test
@@ -226,5 +226,23 @@ public class FareCalculatorServiceTest {
 
         // Check if new ticket price with reduction is equal to original price with 5% less
         assertEquals(ticket.getPrice(), savedPrice * 0.95);
+    }
+
+    @Test
+    public void calculateFareWithUnknownType() {
+        // Setup ticket
+        Date inTime = new Date();
+        inTime.setTime( System.currentTimeMillis() - (60 * 60 * 1000) ); // 1 hour for the test
+        Date outTime = new Date();
+
+        ParkingSpot parkingSpot = new ParkingSpot(1, null, false);
+        ticket.setVehicleRegNumber("A");
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+        ticket.setParkingSpot(parkingSpot);
+
+        assertThrows(Exception.class, () -> {
+            fareCalculatorService.calculateFare(ticket, false);
+        });
     }
 }
