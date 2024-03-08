@@ -15,10 +15,6 @@ public class FareCalculatorService {
         this.ticketDAO = null;
     }
 
-    public void setTicketDAO(TicketDAO ticketDAO) {
-        this.ticketDAO = ticketDAO;
-    }
-
     public void calculateFare(Ticket ticket, boolean applyReduction){
         if( (ticket.getOutTime() == null) || (ticket.getOutTime().before(ticket.getInTime())) ){
             throw new IllegalArgumentException("Out time provided is incorrect:"+ticket.getOutTime().toString());

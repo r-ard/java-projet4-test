@@ -10,6 +10,8 @@ public class DateUtil {
      * @return Difference in second
      */
     public static long getDatesDiff(Date a, Date b) {
+        if(a == null || b == null) return 0;
+
         long time = a.getTime() - b.getTime();
         return (long)Math.ceil(time / 1000.0D);
     }
