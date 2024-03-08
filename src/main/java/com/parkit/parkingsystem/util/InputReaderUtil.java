@@ -16,10 +16,6 @@ public class InputReaderUtil {
         this.reader = defaultScan;
     }
 
-    public InputReaderUtil(Scanner scan) {
-        this.reader = scan;
-    }
-
     public void setScanner(Scanner scan) {
         this.reader = scan;
     }

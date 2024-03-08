@@ -21,12 +21,12 @@ public class FareCalculatorServiceTest {
     private Ticket ticket;
 
     @BeforeAll
-    private static void setUp() {
+    public static void setUp() {
         fareCalculatorService = new FareCalculatorService();
     }
 
     @BeforeEach
-    private void setUpPerTest() { ticket = new Ticket(); }
+    public void setUpPerTest() { ticket = new Ticket(); }
 
     @Test
     public void calculateFareCar(){

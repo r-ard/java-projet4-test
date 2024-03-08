@@ -10,10 +10,7 @@ import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -24,11 +21,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ParkingDataBaseIT {
+public class ParkingDataBaseTest {
 
     private static DataBaseTestConfig dataBaseTestConfig = new DataBaseTestConfig();
 
-    @Mock
     private static ParkingSpotDAO parkingSpotDAO;
 
     @Mock
@@ -48,11 +44,17 @@ public class ParkingDataBaseIT {
         dataBasePrepareService = new DataBasePrepareService();
     }
 
-    @BeforeEach
-    public void setUpPerTest() throws Exception {
+    @AfterEach
+    public void postTest() {
+        dataBasePrepareService.clearDataBaseEntries();
+    }
+
+    private void setUpParkingAction() {
         when(inputReaderUtil.readSelection()).thenReturn(1);
-        when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
-        when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
+        try {
+            when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+        }
+        catch(Exception ex) {}
 
         Ticket ticket = new Ticket();
 
@@ -63,13 +65,12 @@ public class ParkingDataBaseIT {
         );
 
         when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
-        when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
-
-        dataBasePrepareService.clearDataBaseEntries();
     }
 
     @Test
     public void testParkingACar(){
+        setUpParkingAction();
+
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processIncomingVehicle();
 
@@ -133,5 +134,23 @@ public class ParkingDataBaseIT {
         parkingService.processExitingVehicle();
 
         assertEquals(exitingTicket.getPrice(), Fare.CAR_RATE_PER_HOUR * 0.95D);
+    }
+
+    @Test
+    public void testParkingDAOUpdate() {
+        int slot = parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR);
+
+        assertNotEquals(slot, -1);
+
+        ParkingSpot parkingSpot = new ParkingSpot(
+                slot,
+                ParkingType.CAR,
+                true
+        );
+
+        parkingSpot.setAvailable(false);
+
+        boolean flag = parkingSpotDAO.updateParking(parkingSpot);
+        assertEquals(flag, true);
     }
 }
