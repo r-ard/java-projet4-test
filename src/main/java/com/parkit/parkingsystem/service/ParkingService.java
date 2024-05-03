@@ -29,9 +29,14 @@ public class ParkingService {
 
     public void processIncomingVehicle() {
         try{
+            String vehicleRegNumber = getVehichleRegNumber();
+            Ticket lastVehicleTicket = ticketDAO.getTicket(vehicleRegNumber);
+
+            if(lastVehicleTicket != null && lastVehicleTicket.getOutTime() == null)
+                throw new Exception("You already have an active ticket on this parking");
+
             ParkingSpot parkingSpot = getNextParkingNumberIfAvailable();
             if(parkingSpot !=null && parkingSpot.getId() > 0){
-                String vehicleRegNumber = getVehichleRegNumber();
                 parkingSpot.setAvailable(false);
                 parkingSpotDAO.updateParking(parkingSpot);//allot this parking space and mark it's availability as false
 
@@ -101,6 +106,10 @@ public class ParkingService {
         try{
             String vehicleRegNumber = getVehichleRegNumber();
             Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
+
+            if(ticket == null || ticket.getOutTime() != null)
+                throw new Exception("You don't have any active ticket with your vehicle");
+
             Date outTime = new Date();
             ticket.setOutTime(outTime);
 
